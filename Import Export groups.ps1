@@ -43,14 +43,17 @@ do
     switch ($input)
     {
         '1'{
+			cls
+			
 			Write-Host "`nThis Funtion is still under construction, tread lightly"
 			Pause
 			Write-Host "`nOnly use this to create a new group that has a different name from the original"
 			
-           		 $oldgroup = Read-Host "`nPlease enter the name of the group to copy"
+			<#
+           		$oldgroup = Read-Host "`nPlease enter the name of the group to copy"
             		$newgroupname1 = Read-Host "`nPlease enter the name of the new group"
 			
-			if ($oldgroup -eq $newgroupname)
+			if ($oldgroup -eq $newgroupname1)
 			{
 				write-host "`nThe names cannot be the same"
 			
@@ -66,10 +69,12 @@ do
 				New-DistributionGroup -Name $newgroupname1 -Alias $newgroupalias1 -Displayname $newgroupname1
 				
 				import-csv "C:\DistExports\$oldgroup.csv" | foreach {add-distributiongroupmember -identity $newgroupname1 -member $_.PrimarySmtpAddress}
-			}
+			}  #>
 
         }
         '2'{
+			cls
+			
 			Write-Host "`nThis funtion will allow you to import from a CSV file with user PrimarySmtpAddress"
 			Pause
 			
@@ -89,7 +94,7 @@ do
 				cls
 			
 				Write-Host "`n`n`nPlease confirm your entries below:"
-				Write-Host "`nGroup Name: $newgroupname"
+				Write-Host "`n`nGroup Name: $newgroupname"
 				Write-Host "`nGroup Alias: $newgroupalias"
 				Write-Host "`nGroup Primary SMTP address: $newgroupSMTP"
 				
@@ -103,6 +108,8 @@ do
             
         }
 		'3'{
+			cls
+			
 			Write-Host "`nThis funtion will output a CSV file to C:\DistExports`n"
 			$groupname = Read-Host "Please enter the name of the group you wish to export"
 			
