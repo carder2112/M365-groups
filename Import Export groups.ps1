@@ -43,14 +43,17 @@ do
     switch ($input)
     {
         '1'{
-			Write-Host "`nThis Funtion is still under construction, tread lightly"
+			cls
 			
+			Write-Host "`nThis Funtion is still under construction, tread lightly"
+			Pause
 			Write-Host "`nOnly use this to create a new group that has a different name from the original"
 			
-            $oldgroup = Read-Host "`nPlease enter the name of the group to copy"
-            $newgroupname1 = Read-Host "`nPlease enter the name of the new group"
+			<#
+           		$oldgroup = Read-Host "`nPlease enter the name of the group to copy"
+            		$newgroupname1 = Read-Host "`nPlease enter the name of the new group"
 			
-			if ($oldgroup -eq $newgroupname)
+			if ($oldgroup -eq $newgroupname1)
 			{
 				write-host "`nThe names cannot be the same"
 			
@@ -66,17 +69,19 @@ do
 				New-DistributionGroup -Name $newgroupname1 -Alias $newgroupalias1 -Displayname $newgroupname1
 				
 				import-csv "C:\DistExports\$oldgroup.csv" | foreach {add-distributiongroupmember -identity $newgroupname1 -member $_.PrimarySmtpAddress}
-			}
+			}  #>
 
         }
         '2'{
+			cls
+			
 			Write-Host "`nThis funtion will allow you to import from a CSV file with user PrimarySmtpAddress"
 			Pause
 			
-            Write-Host "`nPlease select the file you wish to import"
-            Pause
+           		 Write-Host "`nPlease select the file you wish to import"
+           		 Pause
 			
-            $inputfile = Get-FileName "C:\DistExports"
+           		 $inputfile = Get-FileName "C:\DistExports"
 			
 			do {
 				$newgroupname = Read-Host "`nPlease enter the name of the new group"
@@ -88,20 +93,23 @@ do
 			
 				cls
 			
-				Write-Host "`n`n`n`nGroup Name: $newgroupname"
-				Write-Host "Group Alias: $newgroupalias"
-				Write-Host "Group Primary SMTP address: $newgroupSMTP"
+				Write-Host "`n`n`nPlease confirm your entries below:"
+				Write-Host "`n`nGroup Name: $newgroupname"
+				Write-Host "`nGroup Alias: $newgroupalias"
+				Write-Host "`nGroup Primary SMTP address: $newgroupSMTP"
 				
-				$confirm = Read-Host "`nPlease press y to confirm the above names are correct"
+				$confirm = Read-Host "`n`nPlease press y to confirm the above names are correct"
 			} until ($confirm -eq 'y')
 			
 				
-            New-DistributionGroup -Name $newgroupname -Alias $newgroupalias -Displayname $newgroupname -PrimarySmtpAddress $newgroupSMTP
+           		 New-DistributionGroup -Name $newgroupname -Alias $newgroupalias -Displayname $newgroupname -PrimarySmtpAddress $newgroupSMTP
 
-            import-csv $inputfile | foreach {add-distributiongroupmember -identity $newgroupname -member $_.PrimarySmtpAddress}
+            		import-csv $inputfile | foreach {add-distributiongroupmember -identity $newgroupname -member $_.PrimarySmtpAddress}
             
         }
 		'3'{
+			cls
+			
 			Write-Host "`nThis funtion will output a CSV file to C:\DistExports`n"
 			$groupname = Read-Host "Please enter the name of the group you wish to export"
 			
