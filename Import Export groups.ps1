@@ -5,9 +5,9 @@
 Function Show-Menu 
 {
     cls
-    Write-Host "===========Export Import AD group as cloud only distribution group========="
+    Write-Host "`n===========Export Import AD group as cloud only distribution group========="
 	
-    Write-host "1: Press 1 to copy a distribution group with a new name"
+    Write-host "`n1: Press 1 to copy a distribution group with a new name"
     Write-Host "2: Press 2 to create a new group from CSV (must be PrimarySmtpAddress)"
 	Write-Host "3: Press 3 to export a distribution list from M365"
     write-host "q: Press q to quit"
@@ -30,7 +30,7 @@ Import-Module ExchangeOnlineManagement
 
 cls
 
-$User = Read-Host "Please enter your M365 admin username: "
+$User = Read-Host "`nPlease enter your M365 admin username: "
 
 Connect-ExchangeOnline -UserPrincipalName $User
 
@@ -47,7 +47,7 @@ do
 			
 			Write-Host "`nThis Funtion is still under construction, tread lightly"
 			Pause
-			Write-Host "`nOnly use this to create a new group that has a different name from the original"
+			#Write-Host "`nOnly use this to create a new group that has a different name from the original"
 			
 			<#
            		$oldgroup = Read-Host "`nPlease enter the name of the group to copy"
@@ -75,13 +75,13 @@ do
         '2'{
 			cls
 			
-			Write-Host "`nThis funtion will allow you to import from a CSV file with user PrimarySmtpAddress"
+			Write-Host "`nThis funtion will allow you to import users from a CSV file with the user's PrimarySmtpAddress"
 			Pause
 			
-           		 Write-Host "`nPlease select the file you wish to import"
-           		 Pause
+           	Write-Host "`nPlease select the file you wish to import"
+           	Pause
 			
-           		 $inputfile = Get-FileName "C:\DistExports"
+           	$inputfile = Get-FileName "C:\DistExports"
 			
 			do {
 				$newgroupname = Read-Host "`nPlease enter the name of the new group"
@@ -102,9 +102,9 @@ do
 			} until ($confirm -eq 'y')
 			
 				
-           		 New-DistributionGroup -Name $newgroupname -Alias $newgroupalias -Displayname $newgroupname -PrimarySmtpAddress $newgroupSMTP
+           		New-DistributionGroup -Name $newgroupname -Alias $newgroupalias -Displayname $newgroupname -PrimarySmtpAddress $newgroupSMTP
 
-            		import-csv $inputfile | foreach {add-distributiongroupmember -identity $newgroupname -member $_.PrimarySmtpAddress}
+            	import-csv $inputfile | foreach {add-distributiongroupmember -identity $newgroupname -member $_.PrimarySmtpAddress}
             
         }
 		'3'{
