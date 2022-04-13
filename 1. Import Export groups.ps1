@@ -1,6 +1,6 @@
 #This script will either export a group members then re-import them with a new group name in a cloud only distribution group
 #Or it will create a cloud only distribution group from an already existing CSV file with user's primary SMTP address
-
+# 4/13/2022 added option to make distribution group reachable from external email
 
 Function Show-Menu 
 {
@@ -90,6 +90,7 @@ do
 			
 				$newgroupalias = Read-Host "`nPlease enter the new group alias for the Group"
 				$newgroupSMTP = Read-Host "`nPlease enter the full Primary SMTP address for the new group"
+				$newgroupExtEmail = Read-Host "`nDo you wish for this group to be reached from external contacts? (y for yes)"
 			
 				cls
 			
@@ -102,11 +103,19 @@ do
 				$confirm = Read-Host "`n`nPlease press y to confirm the above names are correct"
 			} until ($confirm -eq 'y')
 			
-				
-           		New-DistributionGroup -Name $newgroupname -Alias $newgroupalias -Displayname $newgroupname -PrimarySmtpAddress $newgroupSMTP
+			if ($newgroupExtEmail -eq 'y') {
+					
+					New-DistributionGroup -Name $newgroupname -Alias $newgroupalias -Displayname $newgroupname -PrimarySmtpAddress $newgroupSMTP
+					Set-DistributionGroup -Identity $newgroupname -RequireSenderAuthenticationEnabled $false
+					import-csv $inputfile | foreach {add-distributiongroupmember -identity $newgroupname -member $_.PrimarySmtpAddress}
+					
+				}
+				else {
+					
+					New-DistributionGroup -Name $newgroupname -Alias $newgroupalias -Displayname $newgroupname -PrimarySmtpAddress $newgroupSMTP
 
-            	import-csv $inputfile | foreach {add-distributiongroupmember -identity $newgroupname -member $_.PrimarySmtpAddress}
-            
+					import-csv $inputfile | foreach {add-distributiongroupmember -identity $newgroupname -member $_.PrimarySmtpAddress}
+				}
         }
 		'3'{
 			cls
@@ -116,6 +125,16 @@ do
 			
 			Get-DistributionGroupMember -Identity $groupname | Select PrimarySmtpAddress |
 				Export-CSV "C:\DistExports\$groupname.csv" -NoTypeInformation -Encoding UTF8
+		}
+		'4'{
+			cls
+			<#
+			Write-Host "`nThis funtion will output a CSV file to C:\DistExports`n"
+			$dgroupname = Read-Host "Please enter the name of the dynamic distribution group you wish to export"
+			
+			$FTE = Get-DynamicDistributionGroup $dgroupname
+			Get-Recipient -RecipientPreviewFilter $FTE.RecipientFilter | Select Displayname,PrimarySmtpAddress | Export-CSV "C:\DistExports\$dgroupname.csv"
+			#>
 		}
         'q'{
             Disconnect-ExchangeOnline
