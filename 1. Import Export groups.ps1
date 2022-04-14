@@ -103,19 +103,16 @@ do
 				$confirm = Read-Host "`n`nPlease press y to confirm the above names are correct"
 			} until ($confirm -eq 'y')
 			
+			
+			New-DistributionGroup -Name $newgroupname -Alias $newgroupalias -Displayname $newgroupname -PrimarySmtpAddress $newgroupSMTP
+
+			import-csv $inputfile | foreach {add-distributiongroupmember -identity $newgroupname -member $_.PrimarySmtpAddress}
+			
 			if ($newgroupExtEmail -eq 'y') {
 					
-					New-DistributionGroup -Name $newgroupname -Alias $newgroupalias -Displayname $newgroupname -PrimarySmtpAddress $newgroupSMTP
-					Set-DistributionGroup -Identity $newgroupname -RequireSenderAuthenticationEnabled $false
-					import-csv $inputfile | foreach {add-distributiongroupmember -identity $newgroupname -member $_.PrimarySmtpAddress}
-					
-				}
-				else {
-					
-					New-DistributionGroup -Name $newgroupname -Alias $newgroupalias -Displayname $newgroupname -PrimarySmtpAddress $newgroupSMTP
+				Set-DistributionGroup -Identity $newgroupname -RequireSenderAuthenticationEnabled $false
+			}
 
-					import-csv $inputfile | foreach {add-distributiongroupmember -identity $newgroupname -member $_.PrimarySmtpAddress}
-				}
         }
 		'3'{
 			cls
